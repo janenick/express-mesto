@@ -2,7 +2,7 @@ const path = require('path');
 
 const readFile = require('../utils/read-file');
 
-const pathToData = path.join(__dirname, '..', 'users.json');
+const pathToData = path.join(__dirname, '..', 'data', 'users.json');
 
 module.exports.getUsers = (req, res) => {
   readFile(pathToData)
@@ -27,10 +27,4 @@ module.exports.getUser = (req, res) => {
     .catch((err) => {
       res.status(404).send({ error: 'Запрашиваемый ресурс не найден' })
     });
-  /*if (!users[id]) {
-  res.send({ error: 'Такого пользователя нет' });
-  return;
-}
-
-res.send(users[id]);*/
-};
+  };
