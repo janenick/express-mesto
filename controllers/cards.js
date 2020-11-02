@@ -9,6 +9,6 @@ module.exports.getCards = (req, res) => {
   readFile(pathToData)
     .then(data => res.send(data))
     .catch((err) => {
-      res.status(404).send({ error: 'cards Запрашиваемый ресурс не найден' })
+      res.status(404).send({ error: 'cards Запрашиваемый ресурс не найден' });
     });
 };

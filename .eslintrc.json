@@ -16,6 +16,6 @@
         "allow": ["_id"]
       }
     ],
-    "linebreak-style": ["error", "windows"]
+    "linebreak-style": 0
   }
 }
