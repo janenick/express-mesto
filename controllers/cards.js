@@ -1,13 +1,29 @@
-const path = require('path');
-
-const readFile = require('../utils/read-file');
-
-const pathToData = path.join(__dirname, '..', 'data', 'cards.json');
+const Card = require('../models/card');
 
 module.exports.getCards = (req, res) => {
-  readFile(pathToData)
-    .then((data) => res.send(data))
-    .catch(() => {
-      res.status(500).send({ error: 'Ошибка чтения файла' });
-    });
+  Card.find({})
+    .populate('user')
+    .then((cards) => {
+      console.log(cards);
+      res.send(cards);
+    })
+    .catch((err) => res.status(500).send({ message: err.message }));
+};
+
+module.exports.createCard = (req, res) => {
+  console.log(req.user._id); // _id станет доступен
+  const { name, link } = req.body;
+  console.log('req.body', req.body);
+
+  Card.create({ name, link, owner: req.user._id })
+    .then((card) => res.send({ card }))
+    .catch((err) => res.status(500).send({ message: err.message }));
+};
+
+module.exports.deleteCard = (req, res) => {
+  const { id } = req.params;
+  console.log('del card with id', id);
+  Card.findByIdAndRemove(id)
+    .then((card) => res.status(200).send({ data: card }))
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
