@@ -14,7 +14,7 @@ const cardSchema = new mongoose.Schema({
       validator(v) {
         return /^(https?:\/\/(www\.)?)[\w-]+\.[\w./():,-]+#?$/.test(v);
       },
-      message: (props) => `${props.value} неверный Url`, // когда validator вернёт false, будет использовано это сообщение
+      message: (err) => `${err.value} неверный Url`, // когда validator вернёт false, будет использовано это сообщение
     },
   },
   owner: {

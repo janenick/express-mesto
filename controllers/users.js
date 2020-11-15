@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const CustomError = require('../utils/utils');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -12,8 +13,20 @@ module.exports.getUser = (req, res) => {
   console.log('req.user._id', req.user._id, typeof (req.user._id));
   console.log('id', id, typeof (id));
   User.findById(id)
+    .orFail(() => { throw new CustomError(404, 'Нет пользователя с таким id'); })
     .then((user) => res.status(200).send(user))
-    .catch(() => res.status(404).send({ message: 'Нет пользователя с таким id' }));
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        res.status(400).send({ message: 'id не удовлетворяет условиям' });
+      } else if (err.status === 404) {
+        res.status(err.status).send({ message: err.message });
+      } else if (err.name === 'ValidationError') {
+        const allErr = Object.values(err.errors);
+        res.status(400).send({ message: allErr.reduce((allMessage, item) => allMessage + ((allMessage === '') ? '' : '; ') + item.message) }, '');
+      } else {
+        res.status(500).send({ message: 'Запрашиваемый ресурс не найден' });
+      }
+    });
 };
 
 module.exports.createUser = (req, res) => {
