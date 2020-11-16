@@ -6,6 +6,8 @@ module.exports.sendError = (err, res) => {
   } else if (err.name === 'ValidationError') {
     const allErr = Object.values(err.errors);
     res.status(400).send({ message: allErr.reduce(((allMessage, item) => allMessage + ((allMessage === '') ? '' : '; ') + item.message), '') });
+  } else if (err.name === 'CastError') {
+    res.status(400).send({ message: `Указаны некорректные данные при обновлении: ${err.message}` });
   } else {
     res.status(500).send({ message: 'Запрашиваемый ресурс не найден' });
   }
